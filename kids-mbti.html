@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>나는 어떤 친구일까? 🌟 어린이 MBTI</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #7B5EA7;
+    --purple-light: #C4A8E0;
+    --purple-pale: #F0E8FA;
+    --yellow: #FFD93D;
+    --coral: #FF6B6B;
+    --mint: #6BCBAA;
+    --bg: #FFF8F0;
+    --card: #FFFFFF;
+    --text: #3A2D50;
+    --text-soft: #8B7AA0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nanum Gothic', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 1rem;
+    background-image:
+      radial-gradient(circle at 20% 20%, #FFD93D22 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, #C4A8E033 0%, transparent 50%),
+      radial-gradient(circle at 60% 10%, #FF6B6B18 0%, transparent 40%);
+  }
+
+  .stars {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .star {
+    position: absolute;
+    font-size: 18px;
+    animation: floatStar linear infinite;
+    opacity: 0.35;
+  }
+
+  @keyframes floatStar {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.35; }
+    90% { opacity: 0.35; }
+    100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+  }
+
+  .container {
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── INTRO SCREEN ─── */
+  .intro-screen {
+    text-align: center;
+    padding: 2rem 1rem;
+  }
+
+  .intro-mascot {
+    font-size: 90px;
+    margin-bottom: 0.5rem;
+    display: block;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .intro-title {
+    font-family: 'Jua', sans-serif;
+    font-size: 28px;
+    color: var(--purple);
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+  }
+
+  .intro-sub {
+    font-size: 15px;
+    color: var(--text-soft);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  .intro-badges {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+
+  .badge {
+    background: var(--card);
+    border: 2px solid var(--purple-light);
+    border-radius: 99px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: var(--purple);
+    font-weight: 700;
+  }
+
+  .start-btn {
+    background: var(--purple);
+    color: white;
+    font-family: 'Jua', sans-serif;
+    font-size: 20px;
+    border: none;
+    border-radius: 99px;
+    padding: 16px 48px;
+    cursor: pointer;
+    box-shadow: 0 6px 0 #5a3d8a, 0 8px 20px rgba(123,94,167,0.35);
+    transition: transform 0.1s, box-shadow 0.1s;
+    letter-spacing: 0.5px;
+  }
+
+  .start-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 0 #5a3d8a, 0 12px 24px rgba(123,94,167,0.4); }
+  .start-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 #5a3d8a; }
+
+  /* ─── QUIZ SCREEN ─── */
+  .quiz-screen { padding: 1rem 0.5rem; }
+
+  .top-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+
+  .q-counter {
+    font-family: 'Jua', sans-serif;
+    font-size: 16px;
+    color: var(--purple);
+    white-space: nowrap;
+    min-width: 56px;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 12px;
+    background: var(--purple-pale);
+    border-radius: 99px;
+    overflow: hidden;
+    border: 2px solid var(--purple-light);
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple-light), var(--purple));
+    border-radius: 99px;
+    transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .q-card {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 1.5rem 1.2rem;
+    box-shadow: 0 4px 0 #e0d0f0, 0 8px 24px rgba(123,94,167,0.1);
+    margin-bottom: 1.2rem;
+    border: 2px solid var(--purple-pale);
+  }
+
+  .q-theme {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--purple);
+    background: var(--purple-pale);
+    padding: 4px 12px;
+    border-radius: 99px;
+    margin-bottom: 0.8rem;
+  }
+
+  .q-text {
+    font-family: 'Jua', sans-serif;
+    font-size: 22px;
+    color: var(--text);
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  .choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 1.2rem;
+  }
+
+  .choice-btn {
+    background: var(--card);
+    border: 3px solid #E8DDF5;
+    border-radius: 20px;
+    padding: 1.2rem 0.8rem;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 3px 0 #e0d0f0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .choice-btn:hover {
+    border-color: var(--purple-light);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 0 #d0b8e8;
+  }
+
+  .choice-btn.selected {
+    border-color: var(--purple);
+    background: var(--purple-pale);
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 6px 0 #7B5EA7;
+  }
+
+  .choice-emoji {
+    font-size: 56px;
+    line-height: 1;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  }
+
+  .choice-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  .next-btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: 99px;
+    border: none;
+    background: var(--yellow);
+    color: var(--text);
+    font-family: 'Jua', sans-serif;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #e6b800, 0 8px 20px rgba(255,217,61,0.4);
+    transition: all 0.15s;
+    opacity: 0.4;
+    pointer-events: none;
+    letter-spacing: 0.5px;
+  }
+
+  .next-btn.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .next-btn.active:hover { transform: translateY(-2px); box-shadow: 0 7px 0 #e6b800; }
+  .next-btn.active:active { transform: translateY(3px); box-shadow: 0 2px 0 #e6b800; }
+
+  /* ─── RESULT SCREEN ─── */
+  .result-screen { padding: 1rem 0.5rem 3rem; }
+
+  .result-header {
+    text-align: center;
+    margin-bottom: 1.2rem;
+  }
+
+  .result-label {
+    font-size: 13px;
+    color: var(--text-soft);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .result-mbti {
+    font-family: 'Jua', sans-serif;
+    font-size: 60px;
+    color: var(--purple);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+    text-shadow: 3px 3px 0 var(--purple-light);
+    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .result-nickname {
+    font-family: 'Jua', sans-serif;
+    font-size: 22px;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+
+  .result-emoji-big {
+    font-size: 80px;
+    display: block;
+    margin: 0.8rem 0;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  .story-card {
+    background: var(--purple-pale);
+    border-radius: 20px;
+    padding: 1.2rem;
+    border-left: 5px solid var(--purple);
+    margin-bottom: 1rem;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  .traits-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 1rem;
+  }
+
+  .trait-pill {
+    background: var(--card);
+    border: 2px solid var(--purple-pale);
+    border-radius: 12px;
+    padding: 10px 12px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--purple);
+    box-shadow: 0 2px 0 #e0d0f0;
+  }
+
+  .keyring-card {
+    background: var(--yellow);
+    border-radius: 20px;
+    padding: 1.2rem;
+    text-align: center;
+    margin-bottom: 1.2rem;
+    box-shadow: 0 4px 0 #e6b800;
+  }
+
+  .keyring-title {
+    font-family: 'Jua', sans-serif;
+    font-size: 14px;
+    color: #7a5800;
+    margin-bottom: 6px;
+  }
+
+  .keyring-value {
+    font-family: 'Jua', sans-serif;
+    font-size: 20px;
+    color: #3d2c00;
+  }
+
+  .share-section {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 1.2rem;
+    border: 2px dashed var(--purple-light);
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .share-title {
+    font-family: 'Jua', sans-serif;
+    font-size: 15px;
+    color: var(--purple);
+    margin-bottom: 0.8rem;
+  }
+
+  .share-btns {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .share-btn {
+    background: var(--purple);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-family: 'Jua', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 3px 0 #5a3d8a;
+    transition: all 0.1s;
+  }
+
+  .share-btn:hover { transform: translateY(-1px); }
+  .share-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #5a3d8a; }
+  .share-btn.green { background: var(--mint); box-shadow: 0 3px 0 #3d9e7a; }
+
+  .restart-btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: 99px;
+    border: 3px solid var(--purple-light);
+    background: transparent;
+    color: var(--purple);
+    font-family: 'Jua', sans-serif;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .restart-btn:hover { background: var(--purple-pale); transform: translateY(-2px); }
+
+  /* ─── FADE TRANSITION ─── */
+  .screen { animation: fadeIn 0.4s ease both; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .confetti-piece {
+    position: fixed;
+    top: -20px;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    animation: confettiFall linear forwards;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  @keyframes confettiFall {
+    0% { top: -20px; opacity: 1; transform: rotate(0deg) translateX(0); }
+    100% { top: 110vh; opacity: 0; transform: rotate(720deg) translateX(60px); }
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--text);
+    color: white;
+    font-family: 'Jua', sans-serif;
+    font-size: 15px;
+    padding: 12px 24px;
+    border-radius: 99px;
+    z-index: 1000;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="toast" id="toast"></div>
+
+<div class="container" id="app"></div>
+
+<script>
+const questions = [
+  { theme:"🌈 주말", q: "주말에 뭐 하고 싶어?", a: [{e:"🏕️", l:"친구들이랑 밖에서 놀기!", dim:"E"}, {e:"🛋️", l:"집에서 혼자 쉬기!", dim:"I"}] },
+  { theme:"🐾 동물", q: "어떤 동물이 더 좋아?", a: [{e:"🐘", l:"코끼리\n(친구가 많아!)", dim:"E"}, {e:"🦊", l:"여우\n(혼자서도 잘해!)", dim:"I"}] },
+  { theme:"🍎 과일", q: "어떤 과일이 더 좋아?", a: [{e:"🍓", l:"딸기\n(달콤하고 예뻐!)", dim:"S"}, {e:"🍋", l:"레몬\n(특별하고 신기해!)", dim:"N"}] },
+  { theme:"📖 공부", q: "숙제할 때 나는?", a: [{e:"📋", l:"계획 짜고 차근차근!", dim:"S"}, {e:"💡", l:"생각나는 대로 자유롭게!", dim:"N"}] },
+  { theme:"💛 마음", q: "친구가 슬플 때 나는?", a: [{e:"🤗", l:"바로 달려가서 안아줘!", dim:"F"}, {e:"🧩", l:"어떻게 해결할지 같이 생각해!", dim:"T"}] },
+  { theme:"🎭 캐릭터", q: "어떤 캐릭터가 더 끌려?", a: [{e:"🦁", l:"용감한 사자왕\n(모두를 보살펴!)", dim:"F"}, {e:"🤖", l:"똑똑한 로봇\n(문제를 해결해!)", dim:"T"}] },
+  { theme:"✈️ 여행", q: "여행 갈 때 나는?", a: [{e:"📅", l:"미리 계획 다 세워놔!", dim:"J"}, {e:"🎲", l:"즉흥으로 신나게!", dim:"P"}] },
+  { theme:"🏠 내 방", q: "어떤 방이 더 편해?", a: [{e:"🗂️", l:"정리정돈 된 깔끔한 방", dim:"J"}, {e:"🎨", l:"내 물건들이 여기저기!", dim:"P"}] },
+  { theme:"🍽️ 음식", q: "어떤 음식이 더 좋아?", a: [{e:"🍕", l:"항상 먹던 맛있는 피자!", dim:"S"}, {e:"🌮", l:"새롭고 신기한 타코!", dim:"N"}] },
+  { theme:"👫 모둠", q: "모둠 활동할 때 나는?", a: [{e:"📣", l:"의견 내고 이끄는 편!", dim:"E"}, {e:"✍️", l:"조용히 내 역할 열심히!", dim:"I"}] }
+];
+
+const profiles = {
+  ENFJ:{title:"따뜻한 햇살 리더",emoji:"🌻",story:"너는 마치 들판의 해바라기처럼 모두를 따뜻하게 비춰주는 친구야! 친구들이 슬프면 제일 먼저 달려가고, 모두가 행복할 때 너도 제일 행복해. 학교에서 없어서는 안 될 소중한 존재야!",traits:["마음이 따뜻해요 💛","리더십이 있어요 👑","사람을 좋아해요 🤝","계획적이에요 📋"],keyring:"🌻 해바라기 or ☀️ 태양 키링"},
+  ENFP:{title:"반짝반짝 아이디어 요정",emoji:"✨",story:"너는 마법의 요정처럼 언제나 새로운 아이디어가 반짝반짝! 친구들과 함께 새로운 걸 해보는 게 너무 좋고, 상상력이 어마어마해서 모두를 깜짝깜짝 놀라게 해!",traits:["상상력 폭발 💥","친구를 좋아해요 🫶","새로운 것 도전! 🚀","자유로운 영혼 🌈"],keyring:"⭐ 별 or 🌈 무지개 키링"},
+  ENTJ:{title:"씩씩한 탐험대장",emoji:"🦁",story:"너는 용감한 사자처럼 언제나 앞장서서 나아가는 친구야! 무슨 일이든 척척 결정하고, 친구들을 이끌고 새로운 곳을 탐험하는 게 너무 신나! 너만 따라가면 모험이 시작돼!",traits:["결단력 짱! ⚡","리더십 MAX 👑","목표를 향해! 🎯","계획을 잘 세워요 📌"],keyring:"👑 왕관 or 🦁 사자 키링"},
+  ENTP:{title:"호기심 천재 발명가",emoji:"🔭",story:"너는 매일매일 새로운 질문이 떠오르는 발명가야! '왜?' '어떻게?' 궁금한 게 너무 많고, 친구들이랑 새로운 아이디어로 토론하는 게 정말 즐거워. 세상을 바꿀 발명가가 될지도!",traits:["호기심 가득 🔍","창의력 MAX 🎨","토론을 좋아해요 💬","아이디어 뱅크 💡"],keyring:"💡 전구 or 🚀 로켓 키링"},
+  ESFJ:{title:"다정한 파티 플래너",emoji:"🎀",story:"너는 모두의 생일을 기억하고, 친구가 좋아하는 것도 다 알고 있는 다정한 친구야! 모두가 함께 즐거운 시간을 보낼 때 네 마음도 풍선처럼 부풀어 올라!",traits:["친구를 잘 챙겨요 💛","사교적이에요 🎉","계획적이에요 📅","따뜻한 마음 ❤️"],keyring:"🎀 리본 or 💝 하트 키링"},
+  ESFP:{title:"신나는 무대 위의 스타",emoji:"🌟",story:"너는 어디서든 빛나는 스타야! 재미있는 게 있으면 제일 먼저 달려가고, 친구들을 웃게 만드는 특별한 재주가 있어. 너 있는 곳이 항상 파티야!",traits:["활발해요 🌟","유머가 넘쳐요 😄","지금 이 순간! ✨","친구를 사랑해요 🫶"],keyring:"🎤 마이크 or 🌟 별 키링"},
+  ESTJ:{title:"믿음직한 반장 캐릭터",emoji:"📚",story:"너는 규칙을 잘 지키고, 무슨 일이든 책임감 있게 해내는 친구야! 모둠 활동에서 제일 열심히 하고, 약속은 꼭꼭 지켜. 친구들이 너만 믿고 따라가!",traits:["책임감이 강해요 💪","정직해요 🤝","계획대로 해요 📋","든든한 존재 🛡️"],keyring:"🏆 트로피 or 📚 책 키링"},
+  ESTP:{title:"짜릿한 모험가",emoji:"⚡",story:"너는 번개처럼 빠르고 짜릿한 모험가야! 지금 이 순간이 제일 중요하고, 새로운 도전이 나타나면 눈이 반짝반짝! 무서운 것 없이 용감하게 뛰어들어!",traits:["행동파예요 ⚡","용감해요 🦸","순발력 짱! 🎯","현실적이에요 🌍"],keyring:"⚡ 번개 or 🏄 서핑보드 키링"},
+  INFJ:{title:"신비로운 마음 읽기 마법사",emoji:"🔮",story:"너는 친구의 마음을 마법처럼 읽을 수 있는 특별한 친구야! 말하지 않아도 슬픈 걸 알아채고, 조용히 곁에서 도와줘. 깊고 따뜻한 마음을 가진 소중한 마법사야!",traits:["마음을 잘 읽어요 🔮","창의적이에요 🎨","깊이 이해해요 💜","조용하지만 강해요 🌙"],keyring:"🔮 수정구슬 or 🌙 달 키링"},
+  INFP:{title:"꿈꾸는 동화 작가",emoji:"🌙",story:"너는 항상 아름다운 꿈을 꾸는 동화 속 주인공 같아! 상상의 세계에서 멋진 이야기를 만들고, 세상이 더 아름다워지길 바라는 마음이 너무 예뻐.",traits:["상상력이 풍부해요 🌙","감수성이 예뻐요 💜","나만의 세계 있어요 ✨","친절해요 💛"],keyring:"🌙 달 or 📖 책 키링"},
+  INTJ:{title:"천재 전략가",emoji:"♟️",story:"너는 항상 몇 발 앞을 내다보는 체스 천재야! 겉으로는 조용해 보여도 머릿속은 아이디어로 꽉 차있어. 목표가 생기면 반드시 이루고 마는 대단한 친구야!",traits:["전략적이에요 ♟️","독립적이에요 🦅","목표 지향적 🎯","분석력이 높아요 🔬"],keyring:"♟️ 체스말 or 🚀 로켓 키링"},
+  INTP:{title:"호기심 연구원",emoji:"🔬",story:"너는 작은 것도 놓치지 않는 탐구왕이야! '이건 왜 이럴까?' 하는 질문이 항상 머릿속에 가득하고, 스스로 답을 찾아내는 게 너무 좋아. 언젠간 세상을 놀라게 할 발견을 할 거야!",traits:["논리적이에요 🧠","탐구를 좋아해요 🔭","독창적이에요 💡","집중력 짱 🎯"],keyring:"🔍 돋보기 or ⚛️ 원자 키링"},
+  ISFJ:{title:"따뜻한 숲속 요정",emoji:"🌿",story:"너는 조용히 모두를 돌봐주는 숲속 요정이야! 친구의 생일도 기억하고, 힘들 때 옆에서 조용히 응원해줘. 너 덕분에 주변이 언제나 포근하고 따뜻해!",traits:["세심하게 배려해요 🌿","믿음직해요 🤝","책임감이 있어요 💪","조용히 도와줘요 💛"],keyring:"🍀 클로버 or 🏡 집 키링"},
+  ISFP:{title:"감성 아티스트",emoji:"🎨",story:"너는 세상을 색깔로 표현하는 예술가야! 아름다운 것을 보면 마음이 두근두근하고, 내 방식대로 자유롭게 표현하는 게 제일 행복해. 눈에 보이지 않는 것도 느낄 수 있는 감성쟁이!",traits:["예술적 감각 🎨","자유로운 영혼 🦋","따뜻한 마음 💛","지금을 즐겨요 🌸"],keyring:"🎨 팔레트 or 🌸 꽃 키링"},
+  ISTJ:{title:"꼼꼼한 책임왕",emoji:"🏆",story:"너는 한 번 맡으면 끝까지 해내는 진정한 책임왕이야! 약속은 반드시 지키고, 차근차근 꼼꼼하게 해나가는 게 너의 특기. 믿을 수 있는 든든한 친구야!",traits:["꼼꼼해요 🔎","책임감 MAX 💪","약속을 지켜요 🤝","성실해요 ⭐"],keyring:"🏆 트로피 or ✅ 체크리스트 키링"},
+  ISTP:{title:"쿨한 수리공",emoji:"🔧",story:"너는 망가진 것도 뚝딱 고치는 쿨한 수리공이야! 말보다 행동으로 보여주고, 어떻게 작동하는지 직접 해보는 게 제일 재미있어. 손재주도 좋고 침착해서 어떤 상황에도 흔들리지 않아!",traits:["논리적이에요 🧠","손재주가 있어요 🔧","독립적이에요 🦅","침착해요 🧊"],keyring:"🔧 렌치 or 🤖 로봇 키링"}
+};
+
+let scores = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+let current = 0;
+let selected = null;
+let currentScreen = 'intro';
+
+function createStars() {
+  const container = document.getElementById('stars');
+  const items = ['⭐','✨','🌟','💫','⚡'];
+  for (let i = 0; i < 12; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.textContent = items[Math.floor(Math.random() * items.length)];
+    s.style.left = Math.random() * 100 + '%';
+    s.style.animationDuration = (8 + Math.random() * 12) + 's';
+    s.style.animationDelay = (Math.random() * 10) + 's';
+    s.style.fontSize = (12 + Math.random() * 10) + 'px';
+    container.appendChild(s);
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function launchConfetti() {
+  const colors = ['#7B5EA7','#FFD93D','#FF6B6B','#6BCBAA','#C4A8E0'];
+  for (let i = 0; i < 40; i++) {
+    setTimeout(() => {
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.width = (6 + Math.random() * 8) + 'px';
+      c.style.height = (6 + Math.random() * 8) + 'px';
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      c.style.animationDuration = (2 + Math.random() * 2) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 4000);
+    }, i * 60);
+  }
+}
+
+function renderIntro() {
+  document.getElementById('app').innerHTML = `
+    <div class="intro-screen screen">
+      <span class="intro-mascot">🌟</span>
+      <h1 class="intro-title">나는 어떤 친구일까?</h1>
+      <p class="intro-sub">재미있는 질문 10개에 대답하면<br>나의 특별한 성격을 알 수 있어요!</p>
+      <div class="intro-badges">
+        <span class="badge">🐾 동물</span>
+        <span class="badge">🍎 과일</span>
+        <span class="badge">🎭 캐릭터</span>
+        <span class="badge">✨ 총 10문제</span>
+      </div>
+      <button class="start-btn" onclick="startQuiz()">시작하기! 🚀</button>
+    </div>
+  `;
+}
+
+function startQuiz() {
+  scores = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+  current = 0;
+  selected = null;
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = questions[current];
+  const pct = Math.round((current / questions.length) * 100);
+  document.getElementById('app').innerHTML = `
+    <div class="quiz-screen screen">
+      <div class="top-bar">
+        <span class="q-counter">${current + 1} / ${questions.length}</span>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: ${pct}%"></div>
+        </div>
+      </div>
+      <div class="q-card">
+        <span class="q-theme">${q.theme}</span>
+        <div class="q-text">${q.q}</div>
+      </div>
+      <div class="choices">
+        ${q.a.map((opt, i) => `
+          <button class="choice-btn" id="choice-${i}" onclick="selectChoice(${i}, '${opt.dim}')">
+            <span class="choice-emoji">${opt.e}</span>
+            <span class="choice-label">${opt.l.replace(/\n/g, '<br>')}</span>
+          </button>
+        `).join('')}
+      </div>
+      <button class="next-btn" id="next-btn" onclick="nextQ()">
+        ${current < questions.length - 1 ? '다음으로 →' : '결과 보기! 🎉'}
+      </button>
+    </div>
+  `;
+  selected = null;
+}
+
+function selectChoice(idx, dim) {
+  document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('choice-' + idx).classList.add('selected');
+  selected = dim;
+  document.getElementById('next-btn').classList.add('active');
+}
+
+function nextQ() {
+  if (!selected) return;
+  scores[selected]++;
+  current++;
+  if (current >= questions.length) showResult();
+  else renderQuiz();
+}
+
+function showResult() {
+  const E = scores.E >= scores.I ? 'E' : 'I';
+  const S = scores.S >= scores.N ? 'S' : 'N';
+  const T = scores.T >= scores.F ? 'T' : 'F';
+  const J = scores.J >= scores.P ? 'J' : 'P';
+  const mbti = E + S + T + J;
+  const p = profiles[mbti];
+
+  launchConfetti();
+
+  document.getElementById('app').innerHTML = `
+    <div class="result-screen screen">
+      <div class="result-header">
+        <div class="result-label">✨ 내 성격 유형 ✨</div>
+        <div class="result-mbti">${mbti}</div>
+        <div class="result-nickname">${p.title}</div>
+        <span class="result-emoji-big">${p.emoji}</span>
+      </div>
+      <div class="story-card">${p.story}</div>
+      <div class="traits-grid">
+        ${p.traits.map(t => `<div class="trait-pill">${t}</div>`).join('')}
+      </div>
+      <div class="keyring-card">
+        <div class="keyring-title">🔑 나의 키링 추천</div>
+        <div class="keyring-value">${p.keyring}</div>
+      </div>
+      <div class="share-section">
+        <div class="share-title">친구에게 공유해요! 📤</div>
+        <div class="share-btns">
+          <button class="share-btn" onclick="copyResult('${mbti}', '${p.title}')">📋 결과 복사</button>
+          <button class="share-btn green" onclick="shareKakao('${mbti}', '${p.title}')">💬 공유하기</button>
+        </div>
+      </div>
+      <button class="restart-btn" onclick="startQuiz()">🔄 다시 해볼래요!</button>
+    </div>
+  `;
+}
+
+function copyResult(mbti, title) {
+  const text = `나는 ${mbti} - "${title}"!\n어린이 MBTI 테스트 해보기 👉 ${window.location.href}`;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => showToast('✅ 복사됐어요!'));
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('✅ 복사됐어요!');
+  }
+}
+
+function shareKakao(mbti, title) {
+  const text = `나는 ${mbti} - "${title}"! 어린이 MBTI 테스트 해보기 👉 ${window.location.href}`;
+  if (navigator.share) {
+    navigator.share({ title: '나의 어린이 MBTI 결과!', text });
+  } else {
+    copyResult(mbti, title);
+  }
+}
+
+createStars();
+renderIntro();
+</script>
+</body>
+</html>
